@@ -1,0 +1,14 @@
+build/bin/
+frontend/dist/
+frontend/node_modules/
+frontend/wailsjs/
+frontend/package.json.md5
+*.log
+config.json
+!config.example.json
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.exe
+vendor/

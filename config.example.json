@@ -1,0 +1,22 @@
+{
+  "device_url": "ws://192.168.1.100/ws",
+  "push_interval_ms": 2000,
+  "local_port": 9800,
+  "commands_allowlist": [
+    "spotify:play_pause",
+    "spotify:next",
+    "volume:up",
+    "volume:down",
+    "shell:lock_screen"
+  ],
+  "focus_rules": [
+    {
+      "match": "Code\\.exe|code$",
+      "profile_id": "replace-with-profile-uuid"
+    },
+    {
+      "match": "spotify\\.exe|Spotify$",
+      "profile_id": "replace-with-profile-uuid"
+    }
+  ]
+}
