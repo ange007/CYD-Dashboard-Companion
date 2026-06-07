@@ -89,12 +89,34 @@ jobs:
       - name: Build Linux binary
         run: wails build -platform linux/amd64
 
-      - name: Package Linux binary
+      - name: Package AppImage
         run: |
-          cd build/bin
-          tar -czf companion-linux-amd64.tar.gz companion
+          # Assemble AppDir from the Wails binary + icon, then build AppImage
+          # via linuxdeploy (Wails has no native AppImage target).
+          APPDIR=build/AppDir
+          mkdir -p "$APPDIR/usr/bin"
+          cp build/bin/companion "$APPDIR/usr/bin/companion"
+          cp build/appicon.png "$APPDIR/companion.png"
+          cat > "$APPDIR/companion.desktop" <<EOF
+          [Desktop Entry]
+          Type=Application
+          Name=CYD Dashboard Companion
+          Exec=companion
+          Icon=companion
+          Categories=Utility;
+          Terminal=false
+          EOF
+          wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          chmod +x linuxdeploy-x86_64.AppImage
+          ./linuxdeploy-x86_64.AppImage --appimage-extract >/dev/null
+          ARCH=x86_64 ./squashfs-root/AppRun \
+            --appdir "$APPDIR" \
+            --desktop-file "$APPDIR/companion.desktop" \
+            --icon-file "$APPDIR/companion.png" \
+            --output appimage
+          mv CYD*.AppImage build/bin/companion-linux-amd64.AppImage
 
       - name: Upload Linux release asset
         uses: softprops/action-gh-release@v2
         with:
-          files: build/bin/companion-linux-amd64.tar.gz
+          files: build/bin/companion-linux-amd64.AppImage
