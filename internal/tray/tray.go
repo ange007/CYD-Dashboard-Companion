@@ -4,7 +4,7 @@ package tray
 import (
 	"time"
 
-	"github.com/getlantern/systray"
+	"github.com/energye/systray"
 )
 
 // Callbacks holds actions triggered by tray menu items.
@@ -61,39 +61,32 @@ func onReady(cb Callbacks) {
 		}()
 	}
 
-	// nil channel blocks forever in select — used when autostart menu item is absent.
-	var autoStartCh <-chan struct{}
-	if mAutoStart != nil {
-		autoStartCh = mAutoStart.ClickedCh
-	}
-
-	go func() {
-		for {
-			select {
-			case <-mOpen.ClickedCh:
-				if cb.OnOpen != nil {
-					cb.OnOpen()
-				}
-			case <-mDashboard.ClickedCh:
-				if cb.OnOpenDashboard != nil {
-					cb.OnOpenDashboard()
-				}
-			case <-autoStartCh:
-				if mAutoStart.Checked() {
-					mAutoStart.Uncheck()
-				} else {
-					mAutoStart.Check()
-				}
-				if cb.SetAutoStart != nil {
-					cb.SetAutoStart(mAutoStart.Checked())
-				}
-			case <-mQuit.ClickedCh:
-				systray.Quit()
-				if cb.OnQuit != nil {
-					cb.OnQuit()
-				}
-				return
-			}
+	mOpen.Click(func() {
+		if cb.OnOpen != nil {
+			cb.OnOpen()
 		}
-	}()
+	})
+	mDashboard.Click(func() {
+		if cb.OnOpenDashboard != nil {
+			cb.OnOpenDashboard()
+		}
+	})
+	if mAutoStart != nil {
+		mAutoStart.Click(func() {
+			if mAutoStart.Checked() {
+				mAutoStart.Uncheck()
+			} else {
+				mAutoStart.Check()
+			}
+			if cb.SetAutoStart != nil {
+				cb.SetAutoStart(mAutoStart.Checked())
+			}
+		})
+	}
+	mQuit.Click(func() {
+		systray.Quit()
+		if cb.OnQuit != nil {
+			cb.OnQuit()
+		}
+	})
 }

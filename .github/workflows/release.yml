@@ -16,7 +16,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: '1.25'
 
       - uses: actions/setup-node@v4
         with:
@@ -45,7 +45,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: '1.25'
 
       - uses: actions/setup-node@v4
         with:
@@ -72,7 +72,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: '1.25'
 
       - uses: actions/setup-node@v4
         with:
@@ -81,7 +81,7 @@ jobs:
       - name: Install Wails system deps
         run: |
           sudo apt-get update -q
-          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev
 
       - name: Install Wails
         run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
@@ -90,6 +90,9 @@ jobs:
         run: wails build -platform linux/amd64
 
       - name: Package AppImage
+        # FUSE is unavailable on GitHub runners; run AppImage tools via extraction.
+        env:
+          APPIMAGE_EXTRACT_AND_RUN: 1
         run: |
           # Assemble AppDir from the Wails binary + icon, then build AppImage
           # via linuxdeploy (Wails has no native AppImage target).

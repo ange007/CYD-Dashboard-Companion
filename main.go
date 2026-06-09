@@ -105,7 +105,7 @@ func main() {
 	go startMetricsHTTP(col, metricsPort)
 
 	// System tray — runs alongside Wails window.
-	// Wrapped in a restart loop: getlantern/systray's nativeLoop() exits on any
+	// Wrapped in a restart loop: systray's nativeLoop() exits on any
 	// GetMessage error or unexpected WM_QUIT; we restart it automatically so the
 	// tray icon stays alive for the lifetime of the app.
 	trayQuit := make(chan struct{}) // closed when the user explicitly chooses Quit
