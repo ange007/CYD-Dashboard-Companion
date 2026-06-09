@@ -58,7 +58,9 @@ jobs:
         run: wails build -platform darwin/universal
 
       - name: Zip .app bundle
-        run: cd build/bin && zip -r companion-macos.zip companion.app
+        # Wails names the bundle from productName ("CYD Dashboard Companion.app"),
+        # not outputfilename — glob it.
+        run: cd build/bin && zip -r companion-macos.zip *.app
 
       - name: Upload macOS release asset
         uses: softprops/action-gh-release@v2
@@ -87,7 +89,8 @@ jobs:
         run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
       - name: Build Linux binary
-        run: wails build -platform linux/amd64
+        # ubuntu-latest ships webkit2gtk-4.1 only; Wails defaults to 4.0.
+        run: wails build -platform linux/amd64 -tags webkit2_41
 
       - name: Package AppImage
         # FUSE is unavailable on GitHub runners; run AppImage tools via extraction.
