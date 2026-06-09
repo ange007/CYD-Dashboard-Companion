@@ -36,7 +36,7 @@ jobs:
           generate_release_notes: true
           files: |
             build/bin/companion.exe
-            build/bin/companion-installer.exe
+            build/bin/*-installer.exe
 
   build-macos:
     runs-on: macos-latest
