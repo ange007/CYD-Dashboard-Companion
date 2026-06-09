@@ -25,9 +25,10 @@ jobs:
       - name: Install Wails
         run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
+      - name: Install NSIS
+        run: choco install nsis -y
+
       - name: Build Windows binary + NSIS installer
-        # -nsis requires NSIS on the runner; Wails installs it automatically
-        # on windows-latest via its build tooling.
         run: wails build -platform windows/amd64 -nsis
 
       - name: Create GitHub Release (Windows)
